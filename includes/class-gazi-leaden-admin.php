@@ -13,6 +13,11 @@ class GaziLeaden_Admin {
             array(__CLASS__, 'display_data'),
             'dashicons-forms'
         );
+        add_action('admin_enqueue_scripts', array(__CLASS__, 'enqueue_admin_css'));
+    }
+    
+    public static function enqueue_admin_css() {
+        wp_enqueue_style('gazi-leaden-admin-css', GAZI_LEADEN_PLUGIN_URL . 'assets/css/gazi-leaden-admin.css');
     }
 
     public static function display_data() {
