@@ -6,6 +6,12 @@ if (!defined('ABSPATH')) {
 class GaziLeaden_Form {
     public static function register_shortcode() {
         add_shortcode('gazi_leaden_form', array(__CLASS__, 'render_form'));
+        add_action('wp_enqueue_scripts', array(__CLASS__, 'enqueue_form_script'));
+
+    }
+
+    public static function enqueue_form_script() {
+        wp_enqueue_script('gazi-leaden-form-js', GAZI_LEADEN_PLUGIN_URL . 'assets/js/gazi-leaden-form.js', array('jquery'), GAZI_LEADEN_VERSION, true);
     }
 
     public static function render_form() {
