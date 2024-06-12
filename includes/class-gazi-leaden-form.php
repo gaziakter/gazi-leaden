@@ -7,10 +7,10 @@ class GaziLeaden_Form {
     public static function register_shortcode() {
         add_shortcode('gazi_leaden_form', array(__CLASS__, 'render_form'));
         add_action('wp_enqueue_scripts', array(__CLASS__, 'enqueue_form_script'));
-
     }
 
     public static function enqueue_form_script() {
+        wp_enqueue_script('jquery');
         wp_enqueue_script('gazi-leaden-form-js', GAZI_LEADEN_PLUGIN_URL . 'assets/js/gazi-leaden-form.js', array('jquery'), GAZI_LEADEN_VERSION, true);
     }
 
@@ -45,13 +45,42 @@ class GaziLeaden_Form {
 
     private static function handle_form_submission() {
         if (isset($_POST['gazi_leaden_submit'])) {
-            $data = array(
-                'name' => sanitize_text_field($_POST['gazi_name']),
-                'email' => sanitize_email($_POST['gazi_email']),
-                'whatsapp' => sanitize_text_field($_POST['gazi_whatsapp']),
-                'website' => sanitize_text_field($_POST['gazi_website']),
-            );
-            GaziLeaden_DB::insert_data($data);
+            $name = sanitize_text_field($_POST['gazi_name']);
+            $email = sanitize_email($_POST['gazi_email']);
+            $whatsapp = sanitize_text_field($_POST['gazi_whatsapp']);
+            $website = esc_url_raw($_POST['gazi_website']);
+
+            $errors = [];
+
+            if (empty($name)) {
+                $errors[] = 'Name is required.';
+            }
+
+            if (!is_email($email)) {
+                $errors[] = 'Invalid email address.';
+            }
+
+            if (empty($whatsapp) || !is_numeric($whatsapp) || strlen($whatsapp) < 10) {
+                $errors[] = 'Invalid WhatsApp number.';
+            }
+
+            if (empty($website) || !filter_var($website, FILTER_VALIDATE_URL)) {
+                $errors[] = 'Invalid website URL.';
+            }
+
+            if (empty($errors)) {
+                $data = array(
+                    'name' => $name,
+                    'email' => $email,
+                    'whatsapp' => $whatsapp,
+                    'website' => $website,
+                );
+                GaziLeaden_DB::insert_data($data);
+            } else {
+                foreach ($errors as $error) {
+                    echo '<div style="color:red;">' . esc_html($error) . '</div>';
+                }
+            }
         }
     }
 }

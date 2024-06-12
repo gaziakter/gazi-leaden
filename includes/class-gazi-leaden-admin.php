@@ -15,7 +15,7 @@ class GaziLeaden_Admin {
         );
         add_action('admin_enqueue_scripts', array(__CLASS__, 'enqueue_admin_css'));
     }
-    
+
     public static function enqueue_admin_css() {
         wp_enqueue_style('gazi-leaden-admin-css', GAZI_LEADEN_PLUGIN_URL . 'assets/css/gazi-leaden-admin.css');
     }
