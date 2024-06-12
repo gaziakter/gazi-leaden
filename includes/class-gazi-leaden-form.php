@@ -34,6 +34,7 @@ class GaziLeaden_Form {
                 <label for="gazi_website">Website</label>
                 <input type="text" id="gazi_website" name="gazi_website" required>
             </p>
+            <?php wp_nonce_field('gazi_leaden_form_action', 'gazi_leaden_form_nonce'); ?>
             <p>
                 <input type="submit" name="gazi_leaden_submit" value="Submit">
             </p>
@@ -44,7 +45,7 @@ class GaziLeaden_Form {
     }
 
     private static function handle_form_submission() {
-        if (isset($_POST['gazi_leaden_submit'])) {
+        if (isset($_POST['gazi_leaden_submit']) && wp_verify_nonce($_POST['gazi_leaden_form_nonce'], 'gazi_leaden_form_action')) {
             $name = sanitize_text_field($_POST['gazi_name']);
             $email = sanitize_email($_POST['gazi_email']);
             $whatsapp = sanitize_text_field($_POST['gazi_whatsapp']);
